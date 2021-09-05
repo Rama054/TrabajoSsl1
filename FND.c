@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include <conio.h>
 //char *strtok(char *str, const char *delim)
 
 typedef struct nodo
@@ -119,7 +119,9 @@ int main(int argc, char *argv[])
       if (estadoFinal == 6)
       {
         printf("La cadena contiene una palabra (%s) que no pertenece al lenguaje - TERMINANDO EJECUCION\n",cadenas->info);
-        return 0;
+        printf("Presione cualquier tecla para continual...");
+        getch();
+        return 1;
       }
 
       switch (estadoFinal)
@@ -145,16 +147,10 @@ int main(int argc, char *argv[])
     printf("Octales: %d\n",cantOctal);
     printf("Hexadecimales: %d\n",cantHexadecimal);
 
-
-
-
-
-
-
-    //mostrar(cadenas);
-
-
-
+    
+    printf("Presione cualquier tecla para continual...");
+    getch();
+    return 1;
 }
 
 
