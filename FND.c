@@ -82,13 +82,14 @@ int EsPalabra2 (const char *s) {
                           };
 	int e=0; 
 	unsigned int i; 
+  printf("estados recorridos = [");
 	for (i=0; s[i]!='\0' && e!=6; i++)
 	{
 		e = tt [e][Columna(s[i])];
-    printf("%d\n",e);
+    printf("%d, ",e);
 	}	
-		
-	return e!=6; /* estado final? retorna 1 */
+	printf("]\n");
+	return e; 
 } 
 
 
@@ -107,12 +108,42 @@ int main(int argc, char *argv[])
       token = strtok(NULL, delimitador);
     }
 
-    if(EsPalabra2(cadenaPrincipal))
-      printf("La palabra pertenece al lenguaje\n");
-      else
-      printf("La palabra no pertenece al lenguaje\n");
+    int estadoFinal;
+    int cantDecimal = 0;
+    int cantOctal = 0;
+    int cantHexadecimal = 0;
 
+    while(cadenas !=NULL)
+    {
+      estadoFinal = EsPalabra2( cadenas ->info);
+      if (estadoFinal == 6)
+      {
+        printf("La cadena contiene una palabra (%s) que no pertenece al lenguaje - TERMINANDO EJECUCION\n",cadenas->info);
+        return 0;
+      }
 
+      switch (estadoFinal)
+      {
+      case 2:
+        cantDecimal++;
+        break;
+      case 3:
+        cantDecimal++;
+        break;
+      case 4:
+        cantOctal++;
+        break;
+      case 5:
+        cantHexadecimal++;
+        break;
+      }
+      cadenas = cadenas -> sig;
+    }
+
+    printf("Se encontraron:\n");
+    printf("Decimales: %d\n",cantDecimal);
+    printf("Octales: %d\n",cantOctal);
+    printf("Hexadecimales: %d\n",cantHexadecimal);
 
 
 
