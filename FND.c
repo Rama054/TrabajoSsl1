@@ -4,7 +4,7 @@
 #include <conio.h>
 //char *strtok(char *str, const char *delim)
 
-typedef struct nodo
+typedef struct nodo 
 {
 	char* info;
 	struct nodo *sig;
@@ -72,18 +72,22 @@ int Columna (char c) {
 }
 
 int EsPalabra2 (const char *s) { 
-	static int tt [7][7] = {{1,2,6,6,3,2,6}, /* Tabla de Transiciones */
-							            {6,2,6,6,6,2,6},
-						            	{6,2,6,6,2,2,6},
-						            	{6,4,6,5,6,6,6},
-                          {6,4,6,6,4,6,6},
-                          {6,5,5,6,5,5,6},
-                          {6,6,6,6,6,6,6},
+	static int tt [10][7] = {
+                          {1,2,9,9,3,2,9}, /* Tabla de Transiciones */
+							            {9,2,9,9,9,2,9},
+						            	{9,2,9,9,2,2,9},
+						            	{9,4,9,5,7,9,9},
+                          {9,4,9,9,4,9,9},
+                          {9,6,6,9,8,6,9},
+                          {9,6,6,9,6,6,9},
+                          {9,9,9,9,9,9,9},
+                          {9,9,9,9,9,9,9},
+                          {9,9,9,9,9,9,9}
                           };
 	int e=0; 
 	unsigned int i; 
   printf("estados recorridos = [");
-	for (i=0; s[i]!='\0' && e!=6; i++)
+	for (i=0; s[i]!='\0' && e!=9; i++)
 	{
 		e = tt [e][Columna(s[i])];
     printf("%d, ",e);
@@ -116,7 +120,7 @@ int main(int argc, char *argv[])
     while(cadenas !=NULL)
     {
       estadoFinal = EsPalabra2( cadenas ->info);
-      if (estadoFinal == 6)
+      if (estadoFinal == 9)
       {
         printf("La cadena contiene una palabra (%s) que no pertenece al lenguaje - TERMINANDO EJECUCION\n",cadenas->info);
         printf("Presione cualquier tecla para continual...");
@@ -127,15 +131,15 @@ int main(int argc, char *argv[])
       switch (estadoFinal)
       {
       case 2:
-        cantDecimal++;
-        break;
       case 3:
         cantDecimal++;
         break;
       case 4:
+      case 7:
         cantOctal++;
-        break;
-      case 5:
+        break;       
+      case 6:
+      case 8:
         cantHexadecimal++;
         break;
       }
