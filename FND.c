@@ -96,66 +96,95 @@ int EsPalabra2 (const char *s) {
 	return e; 
 } 
 
+void menu(){
+  printf("Presiona 'a' para ejecutar el ejercicio 1\n");
+  printf("Presiona 'b' para ejecutar el ejercicio 2\n");
+  printf("Presiona 'esc' para salir\n");
+  return;
+}
+
+void ejercicio1()
+{
+  char cadenaPrincipal[80];
+  lista cadenas = NULL;
+
+  scanf("%s", cadenaPrincipal);
+  char delimitador[] = "&";
+  char *token;
+  token = strtok(cadenaPrincipal, delimitador);
+  while (token != NULL)
+  {
+    insertarEnLista(&cadenas, token);
+    token = strtok(NULL, delimitador);
+  }
+
+  int estadoFinal;
+  int cantDecimal = 0;
+  int cantOctal = 0;
+  int cantHexadecimal = 0;
+
+  while (cadenas != NULL)
+  {
+    estadoFinal = EsPalabra2(cadenas->info);
+    if (estadoFinal == 9)
+    {
+      printf("La cadena contiene una palabra (%s) que no pertenece al lenguaje - TERMINANDO EJECUCION\n", cadenas->info);
+      printf("Presione cualquier tecla para continual...");
+      getch();
+      return;
+    }
+
+    switch (estadoFinal)
+    {
+    case 2:
+    case 3:
+      cantDecimal++;
+      break;
+    case 4:
+    case 7:
+      cantOctal++;
+      break;
+    case 6:
+    case 8:
+      cantHexadecimal++;
+      break;
+    }
+    cadenas = cadenas->sig;
+  }
+
+  printf("Se encontraron:\n");
+  printf("Decimales: %d\n", cantDecimal);
+  printf("Octales: %d\n", cantOctal);
+  printf("Hexadecimales: %d\n", cantHexadecimal);
+
+  printf("Presione cualquier tecla para continual...");
+  getch();
+}
 
 int main(int argc, char *argv[])
 {
-    char cadenaPrincipal[80];
-    lista cadenas = NULL;
-
-    scanf("%s",cadenaPrincipal);
-    char delimitador[] = "&";
-  	char *token;
-  	token = strtok(cadenaPrincipal, delimitador);
-    while(token!= NULL) 
-   	{
-      insertarEnLista(&cadenas,token);
-      token = strtok(NULL, delimitador);
-    }
-
-    int estadoFinal;
-    int cantDecimal = 0;
-    int cantOctal = 0;
-    int cantHexadecimal = 0;
-
-    while(cadenas !=NULL)
+  char opcion;
+  menu();
+  opcion = getch();
+  while(opcion!=27)
+  {
+    switch (opcion)
     {
-      estadoFinal = EsPalabra2( cadenas ->info);
-      if (estadoFinal == 9)
-      {
-        printf("La cadena contiene una palabra (%s) que no pertenece al lenguaje - TERMINANDO EJECUCION\n",cadenas->info);
-        printf("Presione cualquier tecla para continual...");
-        getch();
-        return 1;
-      }
-
-      switch (estadoFinal)
-      {
-      case 2:
-      case 3:
-        cantDecimal++;
-        break;
-      case 4:
-      case 7:
-        cantOctal++;
-        break;       
-      case 6:
-      case 8:
-        cantHexadecimal++;
-        break;
-      }
-      cadenas = cadenas -> sig;
+    case 'a':
+      printf("SE APRETO LA A\n");
+      ejercicio1();
+      return 1;
+      break;
+    case 'b':
+      printf("SE APRETO LA B\n");
+      return 1;
+      break;
     }
+    system("cls");
+    menu();
+    opcion = getch();
 
-    printf("Se encontraron:\n");
-    printf("Decimales: %d\n",cantDecimal);
-    printf("Octales: %d\n",cantOctal);
-    printf("Hexadecimales: %d\n",cantHexadecimal);
-
-    
-    printf("Presione cualquier tecla para continual...");
-    getch();
-    return 1;
+  }
+  
+  return 1;
 }
-
-
-
