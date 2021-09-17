@@ -4,33 +4,64 @@
 #include <conio.h>
 //char *strtok(char *str, const char *delim)
 
-typedef struct nodo 
-{
-	char* info;
-	struct nodo *sig;
-} nodoL;
+typedef struct nodo {
+   char* info;
+   int numero;
+   struct nodo *siguiente;
+} tipoNodo;
 
-typedef nodoL* lista;
+typedef tipoNodo *pNodo;
+typedef tipoNodo *Lista;
 
-void insertarEnLista(lista *L, char* cadena);/* inserta el valor n al frente de la lista */
-void mostrar(nodoL* L);/* muestra por pantalla los valores de L, en forma recursiva */
  
- 
-void insertarEnLista (lista *L, char* cadena){
-	lista aux = malloc(sizeof(nodoL)); 
-	aux -> info = cadena; 
-	aux -> sig = *L; 
-	*L=aux; 
-	printf("Se agrego %s a la lista\n",cadena); 
+int ListaVacia(Lista lista) {
+   return (lista == NULL);
 }
 
-void mostrar(nodoL* L){
-	
-	while (L!=NULL){
-		printf(" |%s|->",L->info);
-    L = L -> sig;
+void Insertar(Lista *lista, char* cadena,int numero) {
+   pNodo nuevo, anterior;
+
+   /* Crear un nodo nuevo */
+   nuevo = malloc(sizeof(tipoNodo));
+   nuevo->info = cadena;
+   nuevo->numero = numero;
+
+   /* Si la lista está vacía */
+   if(ListaVacia(*lista)) {
+      /* Añadimos la lista a continuación del nuevo nodo */
+      nuevo->siguiente = *lista;
+      /* Ahora, el comienzo de nuestra lista es en nuevo nodo */
+      *lista = nuevo;
+   } else {
+      /* Buscar el nodo de valor menor a v */
+      anterior = *lista;
+      /* Avanzamos hasta el último elemento o hasta que el siguiente tenga
+         un valor mayor que v */
+      while(anterior->siguiente)
+         anterior = anterior->siguiente;
+      /* Insertamos el nuevo nodo después del nodo anterior */
+      nuevo->siguiente = anterior->siguiente;
+      anterior->siguiente = nuevo;
+   }
+}
+
+void menu(){
+  printf("Presiona 'a' para ejecutar el ejercicio 1\n");
+  printf("Presiona 'b' para ejecutar el ejercicio 2\n");
+  printf("Presiona 'esc' para salir\n");
+  return;
+}
+
+void MostrarLista(Lista lista)
+{
+  pNodo nodo = lista;
+
+  while (nodo)
+  {
+    printf("%s -> ", nodo->info);
+    nodo = nodo->siguiente;
   }
-	return;
+  printf("\n");
 }
 
 int Columna (char c) {
@@ -72,22 +103,18 @@ int Columna (char c) {
 }
 
 int EsPalabra2 (const char *s) { 
-	static int tt [10][7] = {
-                          {1,2,9,9,3,2,9}, /* Tabla de Transiciones */
-							            {9,2,9,9,9,2,9},
-						            	{9,2,9,9,2,2,9},
-						            	{9,4,9,5,7,9,9},
-                          {9,4,9,9,4,9,9},
-                          {9,6,6,9,8,6,9},
-                          {9,6,6,9,6,6,9},
-                          {9,9,9,9,9,9,9},
-                          {9,9,9,9,9,9,9},
-                          {9,9,9,9,9,9,9}
+	static int tt [6][7] = {
+                          {1,2,6,6,3,2,6}, /* Tabla de Transiciones */
+							            {6,2,6,6,6,2,6},
+						            	{6,2,6,6,2,2,6},
+						            	{6,4,6,5,4,6,6},
+                          {6,4,6,6,4,6,6},
+                          {6,5,5,6,5,5,6}
                           };
 	int e=0; 
 	unsigned int i; 
   printf("estados recorridos = [");
-	for (i=0; s[i]!='\0' && e!=9; i++)
+	for (i=0; s[i]!='\0' && e!=6; i++)
 	{
 		e = tt [e][Columna(s[i])];
     printf("%d, ",e);
@@ -96,17 +123,10 @@ int EsPalabra2 (const char *s) {
 	return e; 
 } 
 
-void menu(){
-  printf("Presiona 'a' para ejecutar el ejercicio 1\n");
-  printf("Presiona 'b' para ejecutar el ejercicio 2\n");
-  printf("Presiona 'esc' para salir\n");
-  return;
-}
-
 void ejercicio1()
 {
   char cadenaPrincipal[80];
-  lista cadenas = NULL;
+  Lista  cadenas = NULL;
 
   scanf("%s", cadenaPrincipal);
   char delimitador[] = "&";
@@ -114,10 +134,10 @@ void ejercicio1()
   token = strtok(cadenaPrincipal, delimitador);
   while (token != NULL)
   {
-    insertarEnLista(&cadenas, token);
+    Insertar(&cadenas, token,0);
     token = strtok(NULL, delimitador);
   }
-
+  MostrarLista(cadenas);
   int estadoFinal;
   int cantDecimal = 0;
   int cantOctal = 0;
@@ -126,7 +146,7 @@ void ejercicio1()
   while (cadenas != NULL)
   {
     estadoFinal = EsPalabra2(cadenas->info);
-    if (estadoFinal == 9)
+    if (estadoFinal == 6)
     {
       printf("La cadena contiene una palabra (%s) que no pertenece al lenguaje - TERMINANDO EJECUCION\n", cadenas->info);
       printf("Presione cualquier tecla para continual...");
@@ -141,15 +161,13 @@ void ejercicio1()
       cantDecimal++;
       break;
     case 4:
-    case 7:
       cantOctal++;
       break;
-    case 6:
-    case 8:
+    case 5:
       cantHexadecimal++;
       break;
     }
-    cadenas = cadenas->sig;
+    cadenas = cadenas->siguiente;
   }
 
   printf("Se encontraron:\n");
@@ -160,6 +178,198 @@ void ejercicio1()
   printf("Presione cualquier tecla para continual...");
   getch();
 }
+
+int Columna2(char c)
+{
+  switch (c)
+  {
+  case '0':
+  case '1':
+  case '2':
+  case '3':
+  case '4':
+  case '5':
+  case '6':
+  case '7':
+  case '8':
+  case '9':
+      return 0;
+    break;
+  case '+':
+  case '-':
+  case '*':
+      return 1;
+    break;
+  default:
+    return 2;
+  }
+}
+
+
+int esOperacion(char *s)
+{
+  static int tt [3][3] =  {
+                          {1,3,3},
+                          {1,0,3},
+                          {3,3,3}
+                          };
+  
+  int e=0; 
+	unsigned int i; 
+  printf("estados recorridos = [");
+	for (i=0; s[i]!='\0' && e!=3; i++)
+	{
+		e = tt [e][Columna2(s[i])];
+    printf("%d, ",e);
+	}	
+	printf("]\n");
+	return e; 
+}
+
+
+int aDecimal (int c) {
+return (c - '0');
+}
+
+
+
+
+int Valor(int c)
+{
+  return (c - '0');
+}
+
+int operarCaracteres(int resultado, int numero, char operacion)
+{
+  switch (operacion)
+  {
+  case '+':
+    resultado = resultado + numero;
+    break;
+  case '-':
+    resultado = resultado - numero;
+    break;
+  }
+  return resultado;
+}
+
+void concatenarCharACadena(char *cadena, char c)
+{
+  char cadenaTemporal[2];
+  cadenaTemporal[0] = c;
+  cadenaTemporal[1] = '\0';
+  strcat(cadena, cadenaTemporal);
+}
+
+int multiplicar(char *cadena, int resultado)
+{
+  char d;
+  int i = 0;
+  int j = 0;
+  int n2 = 0;
+
+  while (cadena[i] != 00)
+  {
+    for (j; cadena[j] != '*' && cadena[j] != 00; j++)
+    {
+      d = cadena[j];
+      n2 = n2 * 10 + Valor(d);
+      printf("Valor %d\n", n2);
+    }
+    resultado = resultado * n2;
+    n2 = 0;
+    if (cadena[j] != 00)
+    {
+      j++;
+    }
+    i = j;
+  }
+  printf("Resultado: %d\n", resultado);
+  return resultado;
+}
+
+int realizarOperacion(char *cadenaDeOperaciones)
+{
+  //printf("la cadena es: %s\n", cadenaDeOperaciones);
+  int resultado = 0;
+  int i = 0, j = 0, numero = 0, n2 = 0;
+  char d = ' ';
+  char operacion = '+';
+
+  while (cadenaDeOperaciones[i] != '\0')
+  {
+    for (j; (cadenaDeOperaciones[j] != '+') && (cadenaDeOperaciones[j] != '-') && (cadenaDeOperaciones[j] != '\0'); j++)
+    {
+      d = cadenaDeOperaciones[j];
+      if (d == '*')
+      {
+        char c[] = "";
+        j++;
+        //printf("la cadena es: %s\n", c);
+        for (j; (cadenaDeOperaciones[j] != '+') && (cadenaDeOperaciones[j] != '-') && (cadenaDeOperaciones[j] != '\0'); j++)
+        {
+          concatenarCharACadena(c, cadenaDeOperaciones[j]);
+        }
+        //printf("la cadena es: %s\n", c);
+        numero = multiplicar(c, numero);
+        j--;
+      }
+      else
+      {
+        numero = numero * 10 + Valor(d);
+        //printf("El numero es: %d\n", numero);
+      }
+    }
+    resultado = operarCaracteres(resultado, numero, operacion);
+    //printf("indice: %d\n", j);
+    char x = cadenaDeOperaciones[j];
+    if (x == '+' || x == '-' || x == 00)
+    {
+      operacion = cadenaDeOperaciones[j];
+      //printf("Operacion: %c\n", operacion);
+    }
+    if (x != 00)
+    {
+      j++;
+    }
+    numero = 0;
+    i = j;
+  }
+  //printf("El resultado es: %d\n", resultado);
+  return 0;
+}
+
+void ejercicio2(){
+  char operacion[80];
+  Lista  cadena = NULL;
+  printf("Introduzca una operacion\n");
+  scanf("%s",operacion);
+
+  int estadoFinal;
+  estadoFinal = esOperacion(operacion);
+    if (estadoFinal == 3)
+    {
+      printf("La cadena contiene una palabra (%s) que no pertenece al lenguaje - TERMINANDO EJECUCION\n", operacion);
+      printf("Presione cualquier tecla para continual...");
+      getch();
+      return;
+    }
+    printf("La operacion es valida\n");
+    
+    /*
+    char *numero = "22";
+    int valor = atoi(numero);
+    printf("%d",valor);
+    */
+
+    int resultado = realizarOperacion(operacion);
+    printf("%d\n",resultado);
+    MostrarLista(cadena);
+    
+    return;
+   
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -177,6 +387,7 @@ int main(int argc, char *argv[])
       break;
     case 'b':
       printf("SE APRETO LA B\n");
+      ejercicio2();
       return 1;
       break;
     }
