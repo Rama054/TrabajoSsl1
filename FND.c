@@ -359,12 +359,13 @@ int main(int argc, char *argv[])
     switch (opcion)
     {
     case 'a':
-      printf("SE APRETO LA A\n");
+    case 'A':
+      printf("Escriba una cadena\n");
       ejercicio1();
       return 1;
       break;
     case 'b':
-      printf("SE APRETO LA B\n");
+    case 'B':
       ejercicio2();
       return 1;
       break;
