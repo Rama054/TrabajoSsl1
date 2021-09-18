@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <conio.h>
-//char *strtok(char *str, const char *delim)
 
 typedef struct nodo {
    char* info;
@@ -205,7 +204,6 @@ int Columna2(char c)
   }
 }
 
-
 int esOperacion(char *s)
 {
   static int tt [3][3] =  {
@@ -225,14 +223,6 @@ int esOperacion(char *s)
 	printf("]\n");
 	return e; 
 }
-
-
-int aDecimal (int c) {
-return (c - '0');
-}
-
-
-
 
 int Valor(int c)
 {
@@ -290,43 +280,39 @@ int multiplicar(char *cadena, int resultado)
 
 int realizarOperacion(char *cadenaDeOperaciones)
 {
-  //printf("la cadena es: %s\n", cadenaDeOperaciones);
   int resultado = 0;
   int i = 0, j = 0, numero = 0, n2 = 0;
-  char d = ' ';
+  char digito = ' ';
   char operacion = '+';
 
   while (cadenaDeOperaciones[i] != '\0')
   {
     for (j; (cadenaDeOperaciones[j] != '+') && (cadenaDeOperaciones[j] != '-') && (cadenaDeOperaciones[j] != '\0'); j++)
     {
-      d = cadenaDeOperaciones[j];
-      if (d == '*')
+      digito = cadenaDeOperaciones[j];
+      if (digito == '*')
       {
         char c[] = "";
         j++;
-        //printf("la cadena es: %s\n", c);
         for (j; (cadenaDeOperaciones[j] != '+') && (cadenaDeOperaciones[j] != '-') && (cadenaDeOperaciones[j] != '\0'); j++)
         {
-          concatenarCharACadena(c, cadenaDeOperaciones[j]);
+          concatenarCharACadena(c, cadenaDeOperaciones[j]);//Cadena de operaciones unicamente con multiplicaciones
         }
-        //printf("la cadena es: %s\n", c);
         numero = multiplicar(c, numero);
         j--;
       }
       else
       {
-        numero = numero * 10 + Valor(d);
-        //printf("El numero es: %d\n", numero);
+        numero = numero * 10 + Valor(digito);//Agrega el digito leido al numero que se esta formando 
       }
     }
-    resultado = operarCaracteres(resultado, numero, operacion);
-    //printf("indice: %d\n", j);
+
+    resultado = operarCaracteres(resultado, numero, operacion);//Se encarga de operar el numero obtenido en el termino con el resultado que se va a devolver
+    
     char x = cadenaDeOperaciones[j];
     if (x == '+' || x == '-' || x == 00)
     {
       operacion = cadenaDeOperaciones[j];
-      //printf("Operacion: %c\n", operacion);
     }
     if (x != 00)
     {
@@ -335,8 +321,8 @@ int realizarOperacion(char *cadenaDeOperaciones)
     numero = 0;
     i = j;
   }
-  //printf("El resultado es: %d\n", resultado);
-  return 0;
+
+  return resultado;
 }
 
 void ejercicio2(){
@@ -347,27 +333,19 @@ void ejercicio2(){
 
   int estadoFinal;
   estadoFinal = esOperacion(operacion);
-    if (estadoFinal == 3)
-    {
-      printf("La cadena contiene una palabra (%s) que no pertenece al lenguaje - TERMINANDO EJECUCION\n", operacion);
-      printf("Presione cualquier tecla para continual...");
-      getch();
-      return;
-    }
-    printf("La operacion es valida\n");
-    
-    /*
-    char *numero = "22";
-    int valor = atoi(numero);
-    printf("%d",valor);
-    */
-
-    int resultado = realizarOperacion(operacion);
-    printf("%d\n",resultado);
-    MostrarLista(cadena);
-    
+  if (estadoFinal == 3 || estadoFinal == 0)
+  {
+    printf("La cadena contiene una palabra (%s) que no pertenece al lenguaje - TERMINANDO EJECUCION\n", operacion);
+    printf("Presione cualquier tecla para continual...");
+    getch();
     return;
-   
+  }
+  printf("La operacion es valida\n");
+  int resultado = realizarOperacion(operacion);
+  printf("%d\n",resultado);
+  MostrarLista(cadena);
+    
+  return;   
 }
 
 
@@ -394,7 +372,6 @@ int main(int argc, char *argv[])
     system("cls");
     menu();
     opcion = getch();
-
   }
   
   return 1;
