@@ -344,7 +344,7 @@ void ejercicio2(){
   int resultado = realizarOperacion(operacion);
   printf("%d\n",resultado);
   MostrarLista(cadena);
-    
+  getch();  
   return;   
 }
 
